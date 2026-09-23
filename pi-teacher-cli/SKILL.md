@@ -5,7 +5,7 @@ description: 指导 pi-teacher-cli 的安装、配置与使用。pi-teacher-cli 
 
 # pi-teacher-cli 使用指导
 
-pi-teacher-cli 是 [pi-teacher-server](https://github.com/Pi-Teacher/server) REST API 的命令行封装, 只通过服务端 `/api/cli/...` 接口交互, 永不直连数据库。永久删除、Embedding 管理、系统设置等能力属于 WebUI, 不在本 CLI 范围。
+pi-teacher-cli 是 [pi-teacher-server](https://github.com/Pi-Teacher/server) REST API 的命令行封装。
 
 使用前必须依次完成两步预检, 任何一步不通过先解决再继续:
 
@@ -15,7 +15,7 @@ pi-teacher-cli 是 [pi-teacher-server](https://github.com/Pi-Teacher/server) RES
 
 ## 第 2 步: 检查配置
 
-运行 `pi-teacher-cli config show`。未配置服务端地址或 API Key 时, 读取 `reference/config.md` 按其指导完成配置。API Key 需用户在 WebUI 的 API Keys 页面创建, 不要臆造。
+服务端是 [pi-teacher-server](https://github.com/Pi-Teacher/server), 运行 `pi-teacher-cli config show`。未配置服务端地址或 API Key 时, 读取 `reference/config.md` 按其指导完成配置。API Key 需用户在 WebUI 的 API Keys 页面创建, 不要臆造，如果服务端未安装，按照 `reference/server-install.md` 指导安装: 部署到服务器推荐 Docker + PostgreSQL/SQLite, 本机运行直接二进制 nohup 后台启动
 
 ## pi-teacher 核心概念
 
@@ -28,7 +28,7 @@ pi-teacher-cli 是 [pi-teacher-server](https://github.com/Pi-Teacher/server) RES
 
 **卡片查重 (check)**: 建卡前用 card check 检测重复, 先精确匹配 front, 无命中再做语义相似度检索 (依赖向量)。英语单词、数学公式这类正面写法固定、存在标准形式的卡, 重复卡正面必然完全一致, 精确查重即可覆盖, 不应使用向量: 建这类卡时加 --no-embedding, 查重时同样加 --no-embedding 只做精确匹配, 避免无意义的向量生成开销。
 
-**复习 (Review)**: 基于 FSRS 调度算法。每张卡有一份调度快照 schedule (due 到期时间 / state 状态 / stability 稳定性 / difficulty 难度 / scheduled_days 计划间隔天数 / reps 复习次数 / lapses 遗忘次数)。到期卡进入复习队列, 提交评分 (again / hard / good / easy) (again为记忆效果最差，easy为记忆效果最好，需要根据用户的回答反馈来选择评分) 后服务端重算下次到期时间。复习提交直接生效, 无需。
+**复习 (Review)**: 基于 FSRS 调度算法。每张卡有一份调度快照 schedule (due 到期时间 / state 状态 / stability 稳定性 / difficulty 难度 / scheduled_days 计划间隔天数 / reps 复习次数 / lapses 遗忘次数)。到期卡进入复习队列, 提交评分 (again / hard / good / easy) (again为记忆效果最差，easy为记忆效果最好，需要根据用户的回答反馈来选择评分) 后服务端重算下次到期时间。复习提交直接生效, 无需审批。
 
 **用户信息 (user-profile)**: 用户画像, 一段自由文本 profile, 用于描述用户的学习背景与偏好, 带独立 version 乐观锁, 更新直接生效, 不进审批。
 
@@ -45,19 +45,6 @@ pi-teacher-cli 是 [pi-teacher-server](https://github.com/Pi-Teacher/server) RES
 pi-teacher-cli version   # 输出 CLI 版本号
 ```
 
-### config 配置
-
-```bash
-pi-teacher-cli config set-server <url>   # 保存服务端地址
-pi-teacher-cli config set-api-key <key>   # 保存 API Key
-pi-teacher-cli config show               # 展示合并后的有效配置 (Key 脱敏)
-```
-
-### system 系统
-
-```bash
-pi-teacher-cli system info   # 服务端版本 / go_version / db_driver / 运行时长
-```
 
 ### topic 主题
 
