@@ -1,0 +1,16 @@
+{
+  "name": "pullpage-source",
+  "private": true,
+  "version": "1.0.0",
+  "description": "pullpage skill 的 CLI 工具源码（TypeScript）",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.5.0"
+  }
+}
