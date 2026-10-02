@@ -1,0 +1,46 @@
+version: 1
+
+platforms:
+  pi:
+    description: Pi coding agent
+  claude-code:
+    description: Claude Code
+  codex:
+    description: OpenAI Codex CLI
+
+files:
+  - source: skills
+    targets:
+      pi: "{TARGET_PATH}/.pi/skills"
+      claude-code: "{TARGET_PATH}/.claude/skills"
+      codex: "{TARGET_PATH}/.agents/skills"
+
+  - source: AGENTS.md
+    targets:
+      pi: "{TARGET_PATH}/AGENTS.md"
+      claude-code: "{TARGET_PATH}/AGENTS.md"
+      codex: "{TARGET_PATH}/AGENTS.md"
+
+  - source: learn
+    targets:
+      pi: "{TARGET_PATH}/learn"
+      claude-code: "{TARGET_PATH}/learn"
+      codex: "{TARGET_PATH}/learn"
+
+  - source: materials
+    targets:
+      pi: "{TARGET_PATH}/materials"
+      claude-code: "{TARGET_PATH}/materials"
+      codex: "{TARGET_PATH}/materials"
+
+  - source: review
+    targets:
+      pi: "{TARGET_PATH}/review"
+      claude-code: "{TARGET_PATH}/review"
+      codex: "{TARGET_PATH}/review"
+
+  - source: ta
+    targets:
+      pi: "{TARGET_PATH}/ta"
+      claude-code: "{TARGET_PATH}/ta"
+      codex: "{TARGET_PATH}/ta"
