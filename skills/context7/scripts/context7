@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# Context7 CLI —— 把 search / context 两个接口封装成命令，响应原样透传 JSON。
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+SKILL_DIR="$(dirname -- "$SCRIPT_DIR")"
+ENV_FILE="$SKILL_DIR/.env"
+DEFAULT_BASE_URL="https://context7.com/api"
+
+# 配置优先级：CLI 参数 > 本 skill 目录 .env > 系统环境变量。
+# 系统环境变量已在进程内；这里 source .env 覆盖它；CLI 参数在下方解析时再覆盖。
+if [ -f "$ENV_FILE" ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . "$ENV_FILE"
+  set +a
+fi
+
+usage() {
+  cat <<'EOF'
+用法:
+  context7 search  --libraryName <name> --query <query> [--fast true|false]
+  context7 context --libraryId <id>     --query <query> [--type json|txt] [--fast true|false]
+
+通用:
+  --apiKey <key>    覆盖 CONTEXT7_API_KEY（优先级最高）
+  --baseUrl <url>   覆盖 CONTEXT7_BASE_URL
+  -h, --help        显示本帮助
+
+示例:
+  context7 search  --libraryName react --query "how to manage state with hooks"
+  context7 context --libraryId /vercel/next.js --query "authentication with middleware"
+EOF
+}
+
+cmd="${1:-}"
+case "$cmd" in
+  search|context) shift ;;
+  ''|-h|--help) usage; exit 0 ;;
+  *) echo "错误: 未知子命令 '$cmd'（可用: search, context）" >&2; exit 2 ;;
+esac
+
+LIBNAME=""; LIBID=""; QUERY=""; TYPE="json"; FAST=""
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --libraryName) LIBNAME="${2:?错误: --libraryName 需要一个值}"; shift 2 ;;
+    --libraryId)   LIBID="${2:?错误: --libraryId 需要一个值}";     shift 2 ;;
+    --query)       QUERY="${2:?错误: --query 需要一个值}";         shift 2 ;;
+    --type)        TYPE="${2:?错误: --type 需要一个值}";           shift 2 ;;
+    --fast)        FAST="${2:?错误: --fast 需要一个值}";           shift 2 ;;
+    --apiKey)      CONTEXT7_API_KEY="${2:?错误: --apiKey 需要一个值}";  shift 2 ;;
+    --baseUrl)     CONTEXT7_BASE_URL="${2:?错误: --baseUrl 需要一个值}"; shift 2 ;;
+    -h|--help)     usage; exit 0 ;;
+    *) echo "错误: 未知参数 '$1'（用 --help 查看用法）" >&2; exit 2 ;;
+  esac
+done
+
+BASE="${CONTEXT7_BASE_URL:-$DEFAULT_BASE_URL}"
+BASE="${BASE%/}"
+
+if [ -z "${CONTEXT7_API_KEY:-}" ]; then
+  echo "错误: 缺少 CONTEXT7_API_KEY。可设置系统环境变量、在 $ENV_FILE 中填写、或用 --apiKey 传入。" >&2
+  exit 2
+fi
+if [ -z "$QUERY" ]; then
+  echo "错误: 缺少 --query" >&2
+  exit 2
+fi
+
+extra=()
+[ -n "$FAST" ] && extra+=(--data-urlencode "fast=$FAST")
+auth=(-H "Authorization: Bearer $CONTEXT7_API_KEY")
+
+case "$cmd" in
+  search)
+    [ -n "$LIBNAME" ] || { echo "错误: search 需要 --libraryName" >&2; exit 2; }
+    curl -sS -G "$BASE/v2/libs/search" "${auth[@]}" \
+      --data-urlencode "libraryName=$LIBNAME" \
+      --data-urlencode "query=$QUERY" \
+      ${extra[@]+"${extra[@]}"}
+    ;;
+  context)
+    [ -n "$LIBID" ] || { echo "错误: context 需要 --libraryId" >&2; exit 2; }
+    curl -sS -G "$BASE/v2/context" "${auth[@]}" \
+      --data-urlencode "libraryId=$LIBID" \
+      --data-urlencode "query=$QUERY" \
+      --data-urlencode "type=$TYPE" \
+      ${extra[@]+"${extra[@]}"}
+    ;;
+esac
