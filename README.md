@@ -32,10 +32,12 @@ skill 依赖的 `pi-teacher-cli` 需要与 `pi-teacher-server` 配对安装。�
 
 ## 开箱即用
 
-如果你只想快速体验完整服务端，可以直接用 Docker 部署：[XyzenSun/pi-teacher](https://github.com/XyzenSun/pi-teacher)。
+如果你只想快速体验这套辅助学习方法，可以直接用 Docker 部署：[XyzenSun/pi-teacher](https://github.com/XyzenSun/pi-teacher)。
 
 本项目（skills）兼容更多 agent 平台，会优先维护。
 
+## Diagram
+![diagram](diagram.png)
 ## Thanks
 [Linux.do](https://linux.do/)
 ## License
