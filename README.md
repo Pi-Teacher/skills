@@ -17,7 +17,10 @@ npx @xyzensun/filelay add https://github.com/Pi-Teacher/skills - <放置目录> 
 
 - 各 skill 进入对应平台的 skills 目录（pi → `.pi/skills/`，claude-code → `.claude/skills/`，codex → `.agents/skills/`）
 - `AGENTS.md` 与学习工作区（`learn/`、`materials/`、`review/`、`ta/`）落在放置目录根，agent 进入该目录即进入教师角色
-
+### 不使用npx安装
+ `git clone https://github.com/Pi-Teacher/skills.git` 然后把 上层skills 目录改名 `StudySpace` ，然后把skills目录(到这里的时候就是StudySpace/skills)改名,按照下面的规则
+pi → `.pi/skills/`，claude-code → `.claude/skills/`，codex → `.agents/skills/`。
+完成后配置服务端。
 ## 配置服务端
 
 skill 依赖的 `pi-teacher-cli` 需要与 `pi-teacher-server` 配对安装。安装完成后，将以下 prompt 发给你的 agent，由它引导完成服务端配置：
