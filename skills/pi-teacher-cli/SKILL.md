@@ -120,7 +120,7 @@ pi-teacher-cli user-profile get
 pi-teacher-cli user-profile set --profile <文本> --expected-version <v>
 ```
 
-`--profile` 必填, 空串表示清空画像; `--expected-version` 取自 get 输出的 version, 首次写入用 0。更新直接生效, 不进审批。
+`--profile` 必填, 空串表示清空画像; `--expected-version` 取自 get 输出的 version, 首次写入用 0。如果用户设置了更新画像需要审批，则用户在webUI中同意后才会生效
 
 ## 关键约定
 
