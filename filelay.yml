@@ -11,7 +11,7 @@ platforms:
 files:
   - source: skills
     targets:
-      pi: "{TARGET_PATH}/.pi/skills"
+      pi: "{TARGET_PATH}/.agents/skills"
       claude-code: "{TARGET_PATH}/.claude/skills"
       codex: "{TARGET_PATH}/.agents/skills"
 
